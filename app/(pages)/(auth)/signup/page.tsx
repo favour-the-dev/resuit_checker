@@ -109,15 +109,50 @@ export default function SignupPage() {
     setIsLoading(true);
     // Generate student ID based on mat-no and level
     // Format: CS/{LEVEL}/{MAT-NO}
-    const studentId = `CS/${formData.level}/${formData.matNo}`;
+    const studentId = `CSC/${formData.level}/${formData.matNo}`;
     const successMessage = `Account created successfully, Your student ID is ${studentId}. Please use this ID to login.`;
+    try {
+      // Simulate API call to register the student
+      const res = await fetch("/api/userexists", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+        }),
+      });
+      const { student } = await res.json();
 
-    // Simulate API call
-    setTimeout(() => {
+      if (student) {
+        setIsLoading(false);
+        toast.error("Email already exists. Please use another email.");
+        return;
+      }
+
+      fetch("/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          studentId,
+        }),
+      });
+      setTimeout(() => {
+        setIsLoading(false);
+        toast(successMessage);
+        router.push("/login?role=student");
+      }, 1500);
+    } catch (err) {
+      console.log(err);
+      toast.error(
+        "An error occurred while creating your account. Please try again."
+      );
       setIsLoading(false);
-      toast(successMessage);
-      router.push("/login?role=student");
-    }, 1500);
+      return;
+    }
   };
 
   return (
