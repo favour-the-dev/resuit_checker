@@ -18,7 +18,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="border-b">
+      <header className="sticky top-0 left-0 bg-background border-b">
         <div className="container mx-auto py-4 px-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Image
@@ -40,9 +40,9 @@ export default function Home() {
               onClick={() => {
                 setIsOpen(true);
               }}
-              className="cursor-pointer"
+              className="relative z-20 cursor-pointer"
             >
-              <AlignLeft className="text-xl" />
+              <AlignLeft className="text-primary-main text-3xl" />
             </div>
             {/*  */}
             <div
@@ -52,8 +52,8 @@ export default function Home() {
             />
             <div
               className={`${
-                isOpen ? "right-0 opacity-100" : "opacity-0 -right-full"
-              } duration-200 ease-in-out py-5 px-3 bg-white text-primary-main rounded-xl absolute top-0 flex flex-col items-center gap-4`}
+                isOpen ? "right-0 z-30 opacity-100" : "opacity-0 -right-full"
+              } duration-200 ease-in-out py-5 px-3 bg-white text-primary-main rounded-lg absolute top-0 flex flex-col items-center gap-4`}
             >
               <div className="w-full flex">
                 <span
@@ -66,12 +66,12 @@ export default function Home() {
                 </span>
               </div>
               <Link href="/login">
-                <Button className="text-xl font-semibold" variant="ghost">
+                <Button className="text-2xl font-semibold" variant="ghost">
                   Login
                 </Button>
               </Link>
               <Link href="/contact">
-                <Button className="text-xl font-semibold" variant="ghost">
+                <Button className="text-2xl font-semibold" variant="ghost">
                   Contact
                 </Button>
               </Link>
@@ -92,7 +92,10 @@ export default function Home() {
 
       <main className="flex-1 container mx-auto py-12 px-4">
         <div className="max-w-3xl mx-auto text-center mb-12">
-          <h1 className="text-4xl font-bold tracking-tight mb-4 text-primary-main">
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-primary-main">
+            University of Port Harcourt
+          </h1>
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-primary-main">
             Computer Science Department Result Portal
           </h1>
           <p className="text-xl text-muted-foreground">
@@ -116,10 +119,18 @@ export default function Home() {
                 grades, and academic standing.
               </p>
             </CardContent>
-            <CardFooter>
+            <CardFooter className="flex flex-col gap-2">
               <Link href="/login?role=student" className="w-full">
-                <Button className="bg-primary-main w-full">
+                <Button className="bg-primary-main hover:bg-primary-main/85 cursor-pointer w-full">
                   Student Login
+                </Button>
+              </Link>
+              <Link href="/signup" className="w-full">
+                <Button
+                  variant="outline"
+                  className="w-full text-primary-main cursor-pointer"
+                >
+                  New Student? Register
                 </Button>
               </Link>
             </CardFooter>
@@ -140,7 +151,9 @@ export default function Home() {
             </CardContent>
             <CardFooter>
               <Link href="/login?role=admin" className="w-full">
-                <Button className="bg-primary-main w-full">Admin Login</Button>
+                <Button className="bg-primary-main hover:bg-primary-main/85 cursor-pointer w-full">
+                  Admin Login
+                </Button>
               </Link>
             </CardFooter>
           </Card>
