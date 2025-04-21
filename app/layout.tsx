@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
+import { ContextProvider } from "@/context/context";
 
 export const metadata: Metadata = {
   title: "CSC RESULT PORTAL",
@@ -22,7 +23,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
-        <main>{children}</main>
+        <main>
+          <ContextProvider>{children}</ContextProvider>
+        </main>
         <Toaster />
       </body>
     </html>
