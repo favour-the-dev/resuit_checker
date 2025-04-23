@@ -1,7 +1,7 @@
 "use client";
 import type React from "react";
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Lock, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,39 +15,70 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import Image from "next/image";
+import { AdminData } from "@/lib/types/types";
+import AuthService from "@/lib/api/auth";
 
 export default function LoginPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const defaultRole = searchParams.get("role") || "student";
+  const defaultRole = "admin";
   const [role, setRole] = useState<string>(defaultRole);
   const [isLoading, setIsLoading] = useState(false);
+  const [admin, setAdmin] = useState<AdminData>({
+    email: "",
+    password: "",
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setAdmin((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+  };
 
-  const handleStudentLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    // Simulate login process
-    setTimeout(() => {
-      setIsLoading(false);
-      router.push("/student/dashboard");
-      toast("Login successful");
-    }, 1500);
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+    if (!admin.password.trim()) {
+      newErrors.password = "Password is required.";
+    } else if (admin.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters.";
+    }
+    if (!admin.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(admin.email)) {
+      newErrors.email = "Email is invalid";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleAdminLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
+    if (!validateForm()) return;
 
-    // Simulate login process
-    setTimeout(() => {
-      setIsLoading(false);
-      router.push("/admin/dashboard");
-      toast("Admin login successful");
-    }, 1500);
+    try {
+      const res = await AuthService.loginAdmin(admin);
+      if (res) {
+        console.log(res);
+        localStorage.setItem("userToken", res);
+        setTimeout(() => {
+          setIsLoading(false);
+          router.push("/admin/dashboard");
+          toast("admin login successful");
+        }, 1500);
+      }
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   };
 
   return (
@@ -74,7 +105,7 @@ export default function LoginPage() {
               />
             </div>
             <CardTitle className="text-2xl text-primary-main">
-              Sign in
+              Admin Log in
             </CardTitle>
             <CardDescription>
               Enter your credentials to access the portal
@@ -86,77 +117,28 @@ export default function LoginPage() {
               onValueChange={setRole}
               className="w-full"
             >
-              <TabsList className="grid w-full grid-cols-2 mb-4">
-                <TabsTrigger
-                  value="student"
-                  className="text-primary-main cursor-pointer"
-                >
-                  Student
-                </TabsTrigger>
-                <TabsTrigger
-                  value="admin"
-                  className="text-primary-main cursor-pointer"
-                >
-                  Admin
-                </TabsTrigger>
-              </TabsList>
-              <TabsContent value="student">
-                <form onSubmit={handleStudentLogin} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="studentId" className="text-primary-main">
-                      Student ID
-                    </Label>
-                    <div className="relative">
-                      <User className="absolute left-3 top-3 h-4 w-4 text-primary-main" />
-                      <Input
-                        id="studentId"
-                        placeholder="Enter your student ID"
-                        required
-                        className="pl-10"
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="studentPassword"
-                      className="text-primary-main"
-                    >
-                      Password
-                    </Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-4 w-4 text-primary-main" />
-                      <Input
-                        id="studentPassword"
-                        type="password"
-                        placeholder="Enter your password"
-                        required
-                        className="pl-10"
-                      />
-                    </div>
-                  </div>
-                  <Button
-                    type="submit"
-                    className="bg-primary-main hover:bg-primary-main/85 cursor-pointer w-full"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? "Signing in..." : "Sign in"}
-                  </Button>
-                </form>
-              </TabsContent>
               <TabsContent value="admin">
                 <form onSubmit={handleAdminLogin} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="adminId" className="text-primary-main">
-                      Admin ID
+                      Email Address:
                     </Label>
                     <div className="relative">
                       <User className="absolute left-3 top-3 h-4 w-4 text-primary-main" />
                       <Input
                         id="adminId"
-                        placeholder="Enter your admin ID"
+                        name="email"
+                        placeholder="Enter your admin Email"
+                        value={admin?.email}
                         required
                         className="pl-10"
+                        onChange={handleChange}
                       />
+                      {errors.email && (
+                        <p className="text-xs text-destructive">
+                          {errors.email}
+                        </p>
+                      )}
                     </div>
                   </div>
                   <div className="space-y-2">
@@ -170,11 +152,19 @@ export default function LoginPage() {
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-primary-main" />
                       <Input
                         id="adminPassword"
+                        name="password"
                         type="password"
-                        placeholder="Enter your password"
+                        placeholder="Enter your admin password"
                         required
+                        value={admin?.password}
+                        onChange={handleChange}
                         className="pl-10"
                       />
+                      {errors.password && (
+                        <p className="text-xs text-destructive">
+                          {errors.password}
+                        </p>
+                      )}
                     </div>
                   </div>
                   <Button
@@ -190,12 +180,12 @@ export default function LoginPage() {
           </CardContent>
           <CardFooter className="flex flex-col space-y-2">
             <div className="text-sm text-center text-muted-foreground">
-              Forgot your password?{" "}
+              Are you a student?{" "}
               <Link
-                href="/reset-password"
+                href="/student-login"
                 className="text-primary-main hover:underline"
               >
-                Reset it here
+                Log in
               </Link>
             </div>
           </CardFooter>

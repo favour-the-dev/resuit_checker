@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { BookOpen, FileText, Home, Settings, User, X } from "lucide-react";
+import { BookOpen, Home, User, X } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -53,19 +53,6 @@ export function StudentSidebar() {
               Dashboard
             </Button>
           </Link>
-          <Link href="/student/results">
-            <Button
-              variant="ghost"
-              className={`${
-                pathname.includes("results")
-                  ? "bg-muted text-primary-main"
-                  : "text-muted-foreground"
-              } cursor-pointer w-full justify-start gap-2 hover:text-primary-main`}
-            >
-              <FileText className="h-4 w-4" />
-              Results
-            </Button>
-          </Link>
           <Link href="/student/courses">
             <Button
               variant="ghost"
@@ -91,19 +78,6 @@ export function StudentSidebar() {
             >
               <User className="h-4 w-4" />
               Profile
-            </Button>
-          </Link>
-          <Link href="/student/settings">
-            <Button
-              variant="ghost"
-              className={`${
-                pathname.includes("settings")
-                  ? "bg-muted text-primary-main"
-                  : "text-muted-foreground"
-              } cursor-pointer w-full justify-start gap-2 hover:text-primary-main`}
-            >
-              <Settings className="h-4 w-4" />
-              Settings
             </Button>
           </Link>
         </nav>

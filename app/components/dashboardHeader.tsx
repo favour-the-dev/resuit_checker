@@ -43,7 +43,7 @@ function DashboardHeader({ role, userName }: DashboardHeaderProps) {
                 className="text-primary-main hover:text-primary-main flex items-center gap-2"
               >
                 <User className="h-4 w-4" />
-                <span className="capitalize">{userName}</span>
+                <span className="capitalize hidden md:block">{userName}</span>
                 <ChevronDown className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>

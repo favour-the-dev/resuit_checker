@@ -16,13 +16,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -30,36 +23,19 @@ import {
 } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import Image from "next/image";
+import AuthService from "@/lib/api/auth";
+
 export default function SignupPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    matricNumber: "",
     email: "",
-    matNo: "",
-    level: "",
-    password: "",
-    confirmPassword: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear error when user types
-    if (errors[name]) {
-      setErrors((prev) => {
-        const newErrors = { ...prev };
-        delete newErrors[name];
-        return newErrors;
-      });
-    }
-  };
-
-  const handleSelectChange = (name: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
-
-    // Clear error when user selects
     if (errors[name]) {
       setErrors((prev) => {
         const newErrors = { ...prev };
@@ -71,33 +47,15 @@ export default function SignupPage() {
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-
-    if (!formData.firstName.trim())
-      newErrors.firstName = "First name is required";
-    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
-
+    if (!formData.matricNumber.trim()) {
+      newErrors.matricNumber = "Matriculation number is required";
+    } else if (!/^[A-Za-z0-9/]+$/.test(formData.matricNumber)) {
+      newErrors.matricNumber = "Invalid matriculation number format";
+    }
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Email is invalid";
-    }
-
-    if (!formData.matNo.trim()) {
-      newErrors.matNo = "Matriculation number is required";
-    } else if (!/^[A-Za-z0-9/]+$/.test(formData.matNo)) {
-      newErrors.matNo = "Invalid matriculation number format";
-    }
-
-    if (!formData.level) newErrors.level = "Level is required";
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    } else if (formData.password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters";
-    }
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = "Please confirm your password";
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -107,51 +65,19 @@ export default function SignupPage() {
     e.preventDefault();
     if (!validateForm()) return;
     setIsLoading(true);
-    // Generate student ID based on mat-no and level
-    // Format: CS/{LEVEL}/{MAT-NO}
-    const studentId = `CSC/${formData.level}/${formData.matNo}`;
-    const successMessage = `Account created successfully, Your student ID is ${studentId}. Please use this ID to login.`;
+    const successMessage = `Account Registerd successfully, request for Code to login`;
     try {
-      // Simulate API call to register the student
-      const res = await fetch("/api/userexists", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: formData.email,
-        }),
-      });
-      const { student } = await res.json();
-
-      if (student) {
-        setIsLoading(false);
-        toast.error("Email already exists. Please use another email.");
-        return;
+      const res = await AuthService.registerUser(formData);
+      console.log(res);
+      if (res !== null) {
+        setTimeout(() => {
+          setIsLoading(false);
+          toast(successMessage);
+          router.push(`/student-login?email=${formData.email}`);
+        }, 1500);
       }
-
-      fetch("/api/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...formData,
-          studentId,
-        }),
-      });
-      setTimeout(() => {
-        setIsLoading(false);
-        toast(successMessage);
-        router.push("/login?role=student");
-      }, 1500);
-    } catch (err) {
-      console.log(err);
-      toast.error(
-        "An error occurred while creating your account. Please try again."
-      );
-      setIsLoading(false);
-      return;
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -186,66 +112,9 @@ export default function SignupPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="firstName" className="text-primary-main">
-                    First Name
-                  </Label>
-                  <Input
-                    id="firstName"
-                    name="firstName"
-                    placeholder="Enter your first name"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    className={errors.firstName ? "border-destructive" : ""}
-                  />
-                  {errors.firstName && (
-                    <p className="text-xs text-destructive">
-                      {errors.firstName}
-                    </p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="lastName" className="text-primary-main">
-                    Last Name
-                  </Label>
-                  <Input
-                    id="lastName"
-                    name="lastName"
-                    placeholder="Enter your last name"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    className={errors.lastName ? "border-destructive" : ""}
-                  />
-                  {errors.lastName && (
-                    <p className="text-xs text-destructive">
-                      {errors.lastName}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-primary-main">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="Enter your email address"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={errors.email ? "border-destructive" : ""}
-                />
-                {errors.email && (
-                  <p className="text-xs text-destructive">{errors.email}</p>
-                )}
-              </div>
-
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <Label htmlFor="matNo" className="text-primary-main">
+                  <Label htmlFor="matricNumber" className="text-primary-main">
                     Matriculation Number
                   </Label>
                   <TooltipProvider>
@@ -263,88 +132,50 @@ export default function SignupPage() {
                   </TooltipProvider>
                 </div>
                 <Input
-                  id="matNo"
-                  name="matNo"
-                  placeholder="e.g. 2020/001"
-                  value={formData.matNo}
+                  id="matricNumber"
+                  name="matricNumber"
+                  placeholder="e.g. u2021/5570001"
+                  value={formData.matricNumber}
                   onChange={handleChange}
-                  className={errors.matNo ? "border-destructive" : ""}
+                  className={errors.matricNumber ? "border-destructive" : ""}
                 />
-                {errors.matNo && (
-                  <p className="text-xs text-destructive">{errors.matNo}</p>
-                )}
-                {!errors.matNo && (
-                  <p className="text-xs text-muted-foreground">
-                    Your student ID will be: CS/{formData.level || "LEVEL"}/
-                    {formData.matNo || "MAT-NO"}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="level" className="text-primary-main">
-                  Level
-                </Label>
-                <Select
-                  value={formData.level}
-                  onValueChange={(value) => handleSelectChange("level", value)}
-                >
-                  <SelectTrigger
-                    id="level"
-                    className={errors.level ? "border-destructive" : ""}
-                  >
-                    <SelectValue placeholder="Select your level" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="100">100 Level</SelectItem>
-                    <SelectItem value="200">200 Level</SelectItem>
-                    <SelectItem value="300">300 Level</SelectItem>
-                    <SelectItem value="400">400 Level</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.level && (
-                  <p className="text-xs text-destructive">{errors.level}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-primary-main">
-                  Password
-                </Label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  placeholder="Create a password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className={errors.password ? "border-destructive" : ""}
-                />
-                {errors.password && (
-                  <p className="text-xs text-destructive">{errors.password}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword" className="text-primary-main">
-                  Confirm Password
-                </Label>
-                <Input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  placeholder="Confirm your password"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className={errors.confirmPassword ? "border-destructive" : ""}
-                />
-                {errors.confirmPassword && (
+                {errors.matricNumber && (
                   <p className="text-xs text-destructive">
-                    {errors.confirmPassword}
+                    {errors.matricNumber}
                   </p>
                 )}
               </div>
-
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="email" className="text-primary-main">
+                    Email
+                  </Label>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Info className="h-4 w-4 text-primary-main cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="w-[200px] text-xs">
+                          Should be your given school email
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="e.g jdoe001@uniport.edu.ng "
+                  value={formData.email}
+                  onChange={handleChange}
+                  className={errors.email ? "border-destructive" : ""}
+                />
+                {errors.email && (
+                  <p className="text-xs text-destructive">{errors.email}</p>
+                )}
+              </div>
               <Button
                 type="submit"
                 className="bg-primary-main hover:bg-primary-main/85 cursor-pointer w-full"

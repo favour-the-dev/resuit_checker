@@ -4,35 +4,29 @@ import { createContext, useState, useContext } from "react";
 interface ContextProps {
   isStudentNavOpen: boolean;
   setIsStudentNavOpen: (isOpen: boolean) => void;
-  studentData?: {
-    userName?: string;
-    userEmail?: string;
-    userLevel?: string;
-    userMatNo?: string;
-    userStudentId?: string;
-  };
-  setStudentData?: React.Dispatch<
-    React.SetStateAction<ContextProps["studentData"]>
-  >;
+  isAdminNavOpen: boolean;
+  setIsAdminNavOpen: (isAdminOpen: boolean) => void;
+  appIsLoading: boolean;
+  setAppIsLoading: (appLoading: boolean) => void;
+  currentLevel: string;
 }
 
 const appContext = createContext<ContextProps | undefined>(undefined);
 export function ContextProvider({ children }: { children: React.ReactNode }) {
-  const [studentData, setStudentData] = useState<ContextProps["studentData"]>({
-    userName: "Favour Odili",
-    userEmail: "favourto91@gmail.com",
-    userLevel: "400 Level",
-    userMatNo: "u2021/5570098",
-    userStudentId: "CSC/400/u2021/5570098",
-  });
+  const currentLevel = "400";
   const [isStudentNavOpen, setIsStudentNavOpen] = useState<boolean>(false);
+  const [isAdminNavOpen, setIsAdminNavOpen] = useState<boolean>(false);
+  const [appIsLoading, setAppIsLoading] = useState<boolean>(false);
   return (
     <appContext.Provider
       value={{
         isStudentNavOpen,
         setIsStudentNavOpen,
-        studentData,
-        setStudentData,
+        isAdminNavOpen,
+        setIsAdminNavOpen,
+        appIsLoading,
+        setAppIsLoading,
+        currentLevel,
       }}
     >
       {children}

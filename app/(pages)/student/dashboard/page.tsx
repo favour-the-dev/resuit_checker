@@ -1,7 +1,6 @@
 "use client";
-
-import { useState } from "react";
-import Link from "next/link";
+import { useState, useEffect } from "react";
+import AuthService from "@/lib/api/auth";
 import { FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,27 +22,63 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StudentSidebar } from "@/app/components/students-sidebar";
 import { useApp } from "@/context/context";
 import DashboardHeader from "@/app/components/dashboardHeader";
+import { ProfileData } from "@/lib/types/types";
+import Loading from "@/app/components/loading";
+import { availableSemesters } from "@/lib/data";
 export default function StudentDashboard() {
-  const { studentData } = useApp();
-  const [selectedSemester, setSelectedSemester] = useState(
-    "1st Semester 2023/2024"
+  const { appIsLoading, setAppIsLoading, currentLevel } = useApp();
+  const semestersToShow = availableSemesters.filter(
+    (levelSem) => parseInt(levelSem.level) <= parseInt(currentLevel)
   );
+  const flattenedSemesters = semestersToShow.flatMap((level) =>
+    level.semesters.map((sem) => ({
+      label: sem.name,
+      value: `${sem.code} Level ${sem.name}`,
+    }))
+  );
+
+  // Get the first available semester or fallback
+  const initialSemesterValue = flattenedSemesters[0]?.value || "";
+
+  const [selectedSemester, setSelectedSemester] =
+    useState(initialSemesterValue);
+  const [studentProfile, setStudentProfile] = useState<ProfileData>();
+  async function getStudentProfile() {
+    setAppIsLoading(true);
+    try {
+      const profileData = await AuthService.getStudentProfile();
+      console.log(profileData);
+      setStudentProfile(profileData);
+      setTimeout(() => {
+        setAppIsLoading(false);
+      }, 1500);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+  useEffect(() => {
+    getStudentProfile();
+  }, []);
 
   return (
     <div className="h-screen overflow-y-hidden flex relative">
       <StudentSidebar />
-
-      <div className="flex-1 flex flex-col overflow-y-scroll">
-        <DashboardHeader role="student" userName={studentData?.userName} />
+      <div
+        className={`flex-1 flex flex-col ${
+          appIsLoading ? "relative overflow-y-hidden" : "overflow-y-scroll"
+        }`}
+      >
+        {appIsLoading && <Loading />}
+        <DashboardHeader role="student" userName={studentProfile?.email} />
         <main className="flex-1 container py-6 px-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
             <div>
-              <h2 className="text-2xl font-bold">
-                Welcome, {studentData?.userName}
+              <h2 className="text-primary-main text-2xl font-bold">
+                Welcome, {studentProfile?.email}
               </h2>
               <p className="text-muted-foreground">
-                Student ID: {studentData?.userStudentId} | Level:{" "}
-                {studentData?.userLevel}
+                Matric Number: {studentProfile?.matricNumber} | Level: 400
               </p>
             </div>
             <Select
@@ -53,22 +88,24 @@ export default function StudentDashboard() {
               <SelectTrigger className="w-[250px]">
                 <SelectValue placeholder="Select semester" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1st Semester 2023/2024">
-                  1st Semester 2023/2024
-                </SelectItem>
-                <SelectItem value="2nd Semester 2022/2023">
-                  2nd Semester 2022/2023
-                </SelectItem>
-                <SelectItem value="1st Semester 2022/2023">
-                  1st Semester 2022/2023
-                </SelectItem>
-                <SelectItem value="2nd Semester 2021/2022">
-                  2nd Semester 2021/2022
-                </SelectItem>
-                <SelectItem value="1st Semester 2021/2022">
-                  1st Semester 2021/2022
-                </SelectItem>
+              <SelectContent className="">
+                {semestersToShow.map((level) => (
+                  <div key={level.level}>
+                    <h2 className="font-semibold text-lg mb-2 text-primary-main">
+                      {level.level} Level
+                    </h2>
+                    <ul>
+                      {level.semesters.map((sem) => (
+                        <SelectItem
+                          value={`${sem.code} Level ${sem.name}`}
+                          className=""
+                        >
+                          {sem.code} Level {sem.name}
+                        </SelectItem>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </SelectContent>
             </Select>
           </div>

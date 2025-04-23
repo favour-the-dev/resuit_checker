@@ -65,7 +65,7 @@ export default function Home() {
                   close
                 </span>
               </div>
-              <Link href="/login">
+              <Link href="/student-login">
                 <Button className="text-2xl font-semibold" variant="ghost">
                   Login
                 </Button>
@@ -80,7 +80,7 @@ export default function Home() {
 
           {/* desktop */}
           <div className="hidden md:flex items-center gap-4 text-primary-main">
-            <Link className="text-xl" href="/login">
+            <Link className="text-xl" href="/student-login">
               <Button variant="ghost">Login</Button>
             </Link>
             <Link className="text-xl" href="/contact">
@@ -120,9 +120,9 @@ export default function Home() {
               </p>
             </CardContent>
             <CardFooter className="flex flex-col gap-2">
-              <Link href="/login?role=student" className="w-full">
+              <Link href="/student-login" className="w-full">
                 <Button className="bg-primary-main hover:bg-primary-main/85 cursor-pointer w-full">
-                  Student Login
+                  Verify Email and Login
                 </Button>
               </Link>
               <Link href="/signup" className="w-full">
@@ -150,7 +150,7 @@ export default function Home() {
               </p>
             </CardContent>
             <CardFooter>
-              <Link href="/login?role=admin" className="w-full">
+              <Link href="/admin-login" className="w-full">
                 <Button className="bg-primary-main hover:bg-primary-main/85 cursor-pointer w-full">
                   Admin Login
                 </Button>
