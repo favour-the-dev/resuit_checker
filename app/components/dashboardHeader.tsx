@@ -16,10 +16,12 @@ interface DashboardHeaderProps {
   userName?: string;
 }
 function DashboardHeader({ role, userName }: DashboardHeaderProps) {
-  const { setIsStudentNavOpen } = useApp();
+  const { setIsStudentNavOpen, setIsAdminNavOpen } = useApp();
   function handleMenuClick() {
     if (role === "student") {
       setIsStudentNavOpen(true);
+    } else if (role === "admin") {
+      setIsAdminNavOpen(true);
     }
   }
   const pathname: string | undefined = usePathname().split("/").pop();
@@ -33,7 +35,7 @@ function DashboardHeader({ role, userName }: DashboardHeaderProps) {
               className="h-6 w-6 text-3xl md:hidden"
             />
             <h1 className="text-xl font-bold capitalize text-primary-main">
-              Student {pathname}
+              {role} {pathname}
             </h1>
           </div>
           <DropdownMenu>
@@ -51,7 +53,7 @@ function DashboardHeader({ role, userName }: DashboardHeaderProps) {
               <DropdownMenuItem>
                 <User className="mr-2 h-4 w-4 text-primary-main" />
                 <Link
-                  href="/student/profile"
+                  href={`/${role}/profile`}
                   className="text-primary-main hover:text-primary-main"
                 >
                   Profile

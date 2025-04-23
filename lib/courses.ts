@@ -10,7 +10,6 @@ interface Course {
   code: string;
   title: string;
   creditUnits: number;
-  lecturer: string;
   status: CourseStatus;
   description: string;
   prerequisites?: string[];
@@ -40,7 +39,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC101",
             title: "Introduction to Computer Science",
             creditUnits: 3,
-            lecturer: "Dr. Johnson",
             status: "completed",
             description:
               "Basic concepts of computer science, including algorithms, programming, and computer architecture.",
@@ -49,7 +47,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC103",
             title: "Introduction to Programming",
             creditUnits: 3,
-            lecturer: "Prof. Williams",
             status: "completed",
             description:
               "Introduction to programming concepts using a high-level language.",
@@ -58,7 +55,6 @@ export const coursesData: LevelCourses[] = [
             code: "MTH101",
             title: "Elementary Mathematics I",
             creditUnits: 3,
-            lecturer: "Dr. Smith",
             status: "completed",
             description:
               "Basic mathematical concepts including algebra, trigonometry, and calculus.",
@@ -67,7 +63,6 @@ export const coursesData: LevelCourses[] = [
             code: "PHY101",
             title: "General Physics I",
             creditUnits: 3,
-            lecturer: "Prof. Brown",
             status: "completed",
             description:
               "Introduction to mechanics, properties of matter, and thermodynamics.",
@@ -76,7 +71,6 @@ export const coursesData: LevelCourses[] = [
             code: "GST101",
             title: "Use of English I",
             creditUnits: 2,
-            lecturer: "Dr. Davis",
             status: "completed",
             description:
               "Development of English language skills for academic and professional purposes.",
@@ -90,7 +84,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC102",
             title: "Introduction to Computer Systems",
             creditUnits: 3,
-            lecturer: "Dr. Johnson",
             status: "completed",
             description:
               "Introduction to computer hardware, software, and operating systems.",
@@ -99,7 +92,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC104",
             title: "Data Structures",
             creditUnits: 3,
-            lecturer: "Prof. Williams",
             status: "completed",
             description:
               "Basic data structures including arrays, linked lists, stacks, and queues.",
@@ -108,7 +100,6 @@ export const coursesData: LevelCourses[] = [
             code: "MTH102",
             title: "Elementary Mathematics II",
             creditUnits: 3,
-            lecturer: "Dr. Smith",
             status: "completed",
             description:
               "Continuation of MTH101, covering linear algebra and differential equations.",
@@ -117,7 +108,6 @@ export const coursesData: LevelCourses[] = [
             code: "PHY102",
             title: "General Physics II",
             creditUnits: 3,
-            lecturer: "Prof. Brown",
             status: "completed",
             description:
               "Introduction to electricity, magnetism, and modern physics.",
@@ -126,7 +116,6 @@ export const coursesData: LevelCourses[] = [
             code: "GST102",
             title: "Use of English II",
             creditUnits: 2,
-            lecturer: "Dr. Davis",
             status: "completed",
             description:
               "Advanced English language skills for academic and professional purposes.",
@@ -145,7 +134,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC201",
             title: "Computer Programming I",
             creditUnits: 3,
-            lecturer: "Dr. Johnson",
             status: "completed",
             description: "Advanced programming concepts and techniques.",
             prerequisites: ["CSC103", "CSC104"],
@@ -154,7 +142,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC203",
             title: "Discrete Structures",
             creditUnits: 3,
-            lecturer: "Prof. Williams",
             status: "completed",
             description:
               "Mathematical structures for computer science, including sets, relations, and graph theory.",
@@ -163,7 +150,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC205",
             title: "Operating Systems I",
             creditUnits: 3,
-            lecturer: "Dr. Smith",
             status: "completed",
             description:
               "Introduction to operating system concepts and design.",
@@ -172,7 +158,6 @@ export const coursesData: LevelCourses[] = [
             code: "MTH201",
             title: "Mathematical Methods",
             creditUnits: 3,
-            lecturer: "Prof. Brown",
             status: "completed",
             description:
               "Mathematical methods for computer science and engineering.",
@@ -181,7 +166,6 @@ export const coursesData: LevelCourses[] = [
             code: "GST201",
             title: "Philosophy and Logic",
             creditUnits: 2,
-            lecturer: "Dr. Davis",
             status: "completed",
             description:
               "Introduction to philosophical concepts and logical reasoning.",
@@ -195,7 +179,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC202",
             title: "Computer Programming II",
             creditUnits: 3,
-            lecturer: "Dr. Johnson",
             status: "completed",
             description: "Advanced programming paradigms and applications.",
             prerequisites: ["CSC201"],
@@ -204,7 +187,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC204",
             title: "Computer Architecture",
             creditUnits: 3,
-            lecturer: "Prof. Williams",
             status: "completed",
             description:
               "Computer organization, architecture, and assembly language programming.",
@@ -213,7 +195,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC206",
             title: "Database Systems",
             creditUnits: 3,
-            lecturer: "Dr. Smith",
             status: "completed",
             description:
               "Introduction to database concepts, design, and implementation.",
@@ -222,7 +203,6 @@ export const coursesData: LevelCourses[] = [
             code: "MTH202",
             title: "Numerical Analysis",
             creditUnits: 3,
-            lecturer: "Prof. Brown",
             status: "completed",
             description: "Numerical methods for solving mathematical problems.",
           },
@@ -230,7 +210,6 @@ export const coursesData: LevelCourses[] = [
             code: "GST202",
             title: "Nigerian People and Culture",
             creditUnits: 2,
-            lecturer: "Dr. Davis",
             status: "completed",
             description: "Study of Nigerian cultural heritage and diversity.",
           },
@@ -248,7 +227,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC301",
             title: "Data Structures and Algorithms",
             creditUnits: 3,
-            lecturer: "Dr. Johnson",
             status: "in-progress",
             description: "Advanced data structures and algorithm analysis.",
             prerequisites: ["CSC104", "CSC202"],
@@ -257,7 +235,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC303",
             title: "Object-Oriented Programming",
             creditUnits: 3,
-            lecturer: "Prof. Williams",
             status: "in-progress",
             description:
               "Object-oriented programming concepts and applications.",
@@ -266,7 +243,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC305",
             title: "Operating Systems II",
             creditUnits: 3,
-            lecturer: "Dr. Smith",
             status: "in-progress",
             description:
               "Advanced operating system concepts and implementation.",
@@ -276,7 +252,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC307",
             title: "Database Management Systems",
             creditUnits: 3,
-            lecturer: "Prof. Brown",
             status: "in-progress",
             description:
               "Advanced database management concepts and techniques.",
@@ -286,7 +261,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC309",
             title: "Computer Networks",
             creditUnits: 3,
-            lecturer: "Dr. Davis",
             status: "in-progress",
             description:
               "Introduction to computer networking concepts and protocols.",
@@ -300,7 +274,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC302",
             title: "Software Engineering",
             creditUnits: 3,
-            lecturer: "Dr. Johnson",
             status: "not-registered",
             description: "Software development methodologies and practices.",
           },
@@ -308,7 +281,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC304",
             title: "Artificial Intelligence",
             creditUnits: 3,
-            lecturer: "Prof. Williams",
             status: "not-registered",
             description:
               "Introduction to artificial intelligence concepts and applications.",
@@ -317,7 +289,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC306",
             title: "Web Development",
             creditUnits: 3,
-            lecturer: "Dr. Smith",
             status: "not-registered",
             description:
               "Web technologies, frameworks, and development practices.",
@@ -326,7 +297,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC308",
             title: "Computer Graphics",
             creditUnits: 3,
-            lecturer: "Prof. Brown",
             status: "not-registered",
             description:
               "Computer graphics concepts, algorithms, and applications.",
@@ -335,7 +305,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC310",
             title: "Human-Computer Interaction",
             creditUnits: 3,
-            lecturer: "Dr. Davis",
             status: "not-registered",
             description:
               "Principles of human-computer interaction and user interface design.",
@@ -354,7 +323,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC401",
             title: "Compiler Construction",
             creditUnits: 3,
-            lecturer: "Dr. Johnson",
             status: "not-registered",
             description:
               "Principles and techniques of compiler design and implementation.",
@@ -363,7 +331,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC403",
             title: "Computer Security",
             creditUnits: 3,
-            lecturer: "Prof. Williams",
             status: "not-registered",
             description:
               "Computer and network security concepts and practices.",
@@ -372,7 +339,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC405",
             title: "Machine Learning",
             creditUnits: 3,
-            lecturer: "Dr. Smith",
             status: "not-registered",
             description: "Machine learning algorithms and applications.",
           },
@@ -380,7 +346,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC407",
             title: "Project Management",
             creditUnits: 3,
-            lecturer: "Prof. Brown",
             status: "not-registered",
             description:
               "Software project management principles and practices.",
@@ -389,7 +354,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC409",
             title: "Research Methodology",
             creditUnits: 2,
-            lecturer: "Dr. Davis",
             status: "not-registered",
             description:
               "Research methods and techniques for computer science.",
@@ -403,7 +367,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC402",
             title: "Final Year Project",
             creditUnits: 6,
-            lecturer: "Various Supervisors",
             status: "not-registered",
             description: "Independent research project in computer science.",
           },
@@ -411,7 +374,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC404",
             title: "Cloud Computing",
             creditUnits: 3,
-            lecturer: "Prof. Williams",
             status: "not-registered",
             description:
               "Cloud computing concepts, architectures, and services.",
@@ -420,7 +382,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC406",
             title: "Mobile Application Development",
             creditUnits: 3,
-            lecturer: "Dr. Smith",
             status: "not-registered",
             description:
               "Mobile application development platforms and techniques.",
@@ -429,7 +390,6 @@ export const coursesData: LevelCourses[] = [
             code: "CSC408",
             title: "Distributed Systems",
             creditUnits: 3,
-            lecturer: "Prof. Brown",
             status: "not-registered",
             description: "Distributed computing concepts and systems.",
           },

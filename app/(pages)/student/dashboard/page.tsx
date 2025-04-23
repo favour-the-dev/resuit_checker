@@ -91,12 +91,13 @@ export default function StudentDashboard() {
               <SelectContent className="">
                 {semestersToShow.map((level) => (
                   <div key={level.level}>
-                    <h2 className="font-semibold text-lg mb-2 text-primary-main">
+                    <h2 className="font-semibold text-lg mb-2">
                       {level.level} Level
                     </h2>
                     <ul>
-                      {level.semesters.map((sem) => (
+                      {level.semesters.map((sem, id) => (
                         <SelectItem
+                          key={id}
                           value={`${sem.code} Level ${sem.name}`}
                           className=""
                         >

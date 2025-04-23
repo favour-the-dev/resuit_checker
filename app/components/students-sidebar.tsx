@@ -53,7 +53,7 @@ export function StudentSidebar() {
               Dashboard
             </Button>
           </Link>
-          <Link href="/student/courses">
+          {/* <Link href="/student/courses">
             <Button
               variant="ghost"
               className={`${
@@ -65,7 +65,7 @@ export function StudentSidebar() {
               <BookOpen className="h-4 w-4" />
               Courses
             </Button>
-          </Link>
+          </Link> */}
           <Separator className="my-2" />
           <Link href="/student/profile">
             <Button

@@ -1,17 +1,7 @@
 "use client";
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  ChevronDown,
-  Download,
-  FileSpreadsheet,
-  LogOut,
-  Plus,
-  Upload,
-  User,
-  Users,
-} from "lucide-react";
+import { Download, FileSpreadsheet, Upload, User, Users } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -22,12 +12,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -35,15 +19,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import DashboardHeader from "@/app/components/dashboardHeader";
 import { AdminSidebar } from "@/app/components/admin-sidebar";
 import { useApp } from "@/context/context";
-export default function AdminDashboard() {
-  const { appIsLoading } = useApp();
-  const [selectedLevel, setSelectedLevel] = useState("300");
-  const [selectedSemester, setSelectedSemester] = useState(
-    "1st Semester 2023/2024"
-  );
+import { availableSemesters } from "@/lib/data";
 
+export default function AdminDashboard() {
+  const { appIsLoading, currentLevel } = useApp();
+  const [selectedLevel, setSelectedLevel] = useState(currentLevel);
+  const [selectedSemester, setSelectedSemester] = useState("First Semester");
   return (
     <div className="h-screen overflow-y-hidden flex relative">
       <AdminSidebar />
@@ -53,60 +37,46 @@ export default function AdminDashboard() {
           appIsLoading ? "relative overflow-y-hidden" : "overflow-y-scroll"
         }`}
       >
-        <header className="border-b">
-          <div className="container py-4 px-6 flex items-center justify-between">
-            <h1 className="text-xl font-bold">Admin Dashboard</h1>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center gap-2">
-                  <User className="h-4 w-4" />
-                  <span>Admin User</span>
-                  <ChevronDown className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>
-                  <User className="mr-2 h-4 w-4" />
-                  <span>Profile</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <Link href="/">Logout</Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </header>
+        <DashboardHeader role="admin" userName="admin" />
 
         <main className="flex-1 container py-6 px-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
             <div>
-              <h2 className="text-2xl font-bold">Admin Dashboard</h2>
+              <h2 className="text-2xl font-bold text-primary-main">
+                Admin Dashboard
+              </h2>
               <p className="text-muted-foreground">
                 Manage student results and records
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-2">
-              <Button className="flex items-center gap-2">
+              {/* <Button className="flex items-center gap-2">
                 <Plus className="h-4 w-4" />
                 <span>Add New Student</span>
-              </Button>
-              <Button variant="outline" className="flex items-center gap-2">
-                <Upload className="h-4 w-4" />
-                <span>Upload Results</span>
-              </Button>
+              </Button> */}
+              <Link href={"/admin/upload-results"}>
+                <Button
+                  variant="outline"
+                  className="text-primary-main hover:text-primary-main/95  flex items-center gap-2"
+                >
+                  <Upload className="h-4 w-4" />
+                  <span>Upload Results</span>
+                </Button>
+              </Link>
             </div>
           </div>
 
           <div className="grid gap-6 md:grid-cols-3 mb-6">
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">
+                <CardTitle className="text-sm font-medium text-primary-main">
                   Total Students
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">1,245</div>
+                <div className="text-2xl font-bold text-primary-main">
+                  1,245
+                </div>
                 <p className="text-xs text-muted-foreground">
                   Across all levels
                 </p>
@@ -114,23 +84,23 @@ export default function AdminDashboard() {
             </Card>
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">
+                <CardTitle className="text-sm font-medium text-primary-main">
                   Results Uploaded
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">24</div>
+                <div className="text-2xl font-bold text-primary-main">24</div>
                 <p className="text-xs text-muted-foreground">This semester</p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">
+                <CardTitle className="text-sm font-medium text-primary-main">
                   Pending Uploads
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">3</div>
+                <div className="text-2xl font-bold text-primary-main">3</div>
                 <p className="text-xs text-muted-foreground">
                   Courses awaiting results
                 </p>
@@ -158,15 +128,19 @@ export default function AdminDashboard() {
               <SelectTrigger className="w-full md:w-[250px]">
                 <SelectValue placeholder="Select semester" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1st Semester 2023/2024">
-                  1st Semester 2023/2024
+              <SelectContent className="text-primary-main">
+                <SelectItem
+                  value="First Semester"
+                  className="text-primary-main hover:text-primary-main/95"
+                >
+                  First Semester
                 </SelectItem>
-                <SelectItem value="2nd Semester 2022/2023">
-                  2nd Semester 2022/2023
-                </SelectItem>
-                <SelectItem value="1st Semester 2022/2023">
-                  1st Semester 2022/2023
+
+                <SelectItem
+                  value="Second Semester"
+                  className="text-primary-main hover:text-primary-main/95"
+                >
+                  Second Semester
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -174,13 +148,17 @@ export default function AdminDashboard() {
 
           <Tabs defaultValue="results">
             <TabsList className="mb-4">
-              <TabsTrigger value="results">Results Management</TabsTrigger>
-              <TabsTrigger value="students">Student Records</TabsTrigger>
+              <TabsTrigger value="results" className="text-primary-main">
+                Results Management
+              </TabsTrigger>
+              <TabsTrigger value="students" className="text-primary-main">
+                Student Records
+              </TabsTrigger>
             </TabsList>
             <TabsContent value="results">
               <Card>
                 <CardHeader>
-                  <CardTitle>
+                  <CardTitle className="text-primary-main">
                     Results for {selectedLevel} Level - {selectedSemester}
                   </CardTitle>
                   <CardDescription>
@@ -192,10 +170,9 @@ export default function AdminDashboard() {
                   <div className="overflow-x-auto">
                     <table className="w-full border-collapse">
                       <thead>
-                        <tr className="border-b">
+                        <tr className="border-b text-primary-main">
                           <th className="text-left py-3 px-4">Course Code</th>
                           <th className="text-left py-3 px-4">Course Title</th>
-                          <th className="text-left py-3 px-4">Lecturer</th>
                           <th className="text-left py-3 px-4">Status</th>
                           <th className="text-left py-3 px-4">Actions</th>
                         </tr>
@@ -206,7 +183,6 @@ export default function AdminDashboard() {
                           <td className="py-3 px-4">
                             Data Structures and Algorithms
                           </td>
-                          <td className="py-3 px-4">Dr. Johnson</td>
                           <td className="py-3 px-4">
                             <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
                               Uploaded
@@ -214,133 +190,44 @@ export default function AdminDashboard() {
                           </td>
                           <td className="py-3 px-4">
                             <div className="flex items-center gap-2">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 px-2"
+                              <Link
+                                className=""
+                                href={"/viewResult/?course=csc301"}
                               >
-                                <FileSpreadsheet className="h-4 w-4" />
-                                <span className="sr-only">View</span>
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 px-2"
-                              >
-                                <Download className="h-4 w-4" />
-                                <span className="sr-only">Download</span>
-                              </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-8 px-2"
+                                >
+                                  <FileSpreadsheet className="h-4 w-4" />
+                                  <span className="">View Results</span>
+                                </Button>
+                              </Link>
+                              <Link href={"/admin/upload-result?course=Csc301"}>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-8 px-2"
+                                >
+                                  <Download className="h-4 w-4" />
+                                  <span className="">Upload</span>
+                                </Button>
+                              </Link>
                             </div>
-                          </td>
-                        </tr>
-                        <tr className="border-b">
-                          <td className="py-3 px-4">CSC303</td>
-                          <td className="py-3 px-4">
-                            Object-Oriented Programming
-                          </td>
-                          <td className="py-3 px-4">Prof. Williams</td>
-                          <td className="py-3 px-4">
-                            <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
-                              Uploaded
-                            </span>
-                          </td>
-                          <td className="py-3 px-4">
-                            <div className="flex items-center gap-2">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 px-2"
-                              >
-                                <FileSpreadsheet className="h-4 w-4" />
-                                <span className="sr-only">View</span>
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 px-2"
-                              >
-                                <Download className="h-4 w-4" />
-                                <span className="sr-only">Download</span>
-                              </Button>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr className="border-b">
-                          <td className="py-3 px-4">CSC305</td>
-                          <td className="py-3 px-4">Operating Systems</td>
-                          <td className="py-3 px-4">Dr. Smith</td>
-                          <td className="py-3 px-4">
-                            <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
-                              Uploaded
-                            </span>
-                          </td>
-                          <td className="py-3 px-4">
-                            <div className="flex items-center gap-2">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 px-2"
-                              >
-                                <FileSpreadsheet className="h-4 w-4" />
-                                <span className="sr-only">View</span>
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 px-2"
-                              >
-                                <Download className="h-4 w-4" />
-                                <span className="sr-only">Download</span>
-                              </Button>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr className="border-b">
-                          <td className="py-3 px-4">CSC307</td>
-                          <td className="py-3 px-4">
-                            Database Management Systems
-                          </td>
-                          <td className="py-3 px-4">Dr. Brown</td>
-                          <td className="py-3 px-4">
-                            <span className="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800">
-                              Pending
-                            </span>
-                          </td>
-                          <td className="py-3 px-4">
-                            <Button variant="outline" size="sm" className="h-8">
-                              <Upload className="h-4 w-4 mr-2" />
-                              <span>Upload</span>
-                            </Button>
-                          </td>
-                        </tr>
-                        <tr className="border-b">
-                          <td className="py-3 px-4">CSC309</td>
-                          <td className="py-3 px-4">Computer Networks</td>
-                          <td className="py-3 px-4">Prof. Davis</td>
-                          <td className="py-3 px-4">
-                            <span className="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800">
-                              Pending
-                            </span>
-                          </td>
-                          <td className="py-3 px-4">
-                            <Button variant="outline" size="sm" className="h-8">
-                              <Upload className="h-4 w-4 mr-2" />
-                              <span>Upload</span>
-                            </Button>
                           </td>
                         </tr>
                       </tbody>
                     </table>
                   </div>
                   <div className="mt-6 flex flex-col sm:flex-row gap-2 justify-end">
-                    <Button
+                    {/* <Button
                       variant="outline"
                       className="flex items-center gap-2"
                     >
                       <Download className="h-4 w-4" />
                       <span>Download Template</span>
-                    </Button>
-                    <Button className="flex items-center gap-2">
+                    </Button> */}
+                    <Button className="flex items-center gap-2 bg-primary-main hover:bg-primary-main">
                       <Upload className="h-4 w-4" />
                       <span>Batch Upload Results</span>
                     </Button>
@@ -351,7 +238,7 @@ export default function AdminDashboard() {
             <TabsContent value="students">
               <Card>
                 <CardHeader>
-                  <CardTitle>
+                  <CardTitle className="text-primary-main">
                     Student Records for {selectedLevel} Level
                   </CardTitle>
                   <CardDescription>
@@ -362,7 +249,7 @@ export default function AdminDashboard() {
                   <div className="overflow-x-auto">
                     <table className="w-full border-collapse">
                       <thead>
-                        <tr className="border-b">
+                        <tr className="border-b text-primary-main">
                           <th className="text-left py-3 px-4">Student ID</th>
                           <th className="text-left py-3 px-4">Name</th>
                           <th className="text-left py-3 px-4">Email</th>
@@ -378,125 +265,21 @@ export default function AdminDashboard() {
                           <td className="py-3 px-4">3.75</td>
                           <td className="py-3 px-4">
                             <div className="flex items-center gap-2">
-                              <Button
+                              {/* <Button
                                 variant="ghost"
                                 size="sm"
                                 className="h-8 px-2"
                               >
                                 <User className="h-4 w-4" />
                                 <span className="sr-only">View Profile</span>
-                              </Button>
+                              </Button> */}
                               <Button
                                 variant="ghost"
                                 size="sm"
                                 className="h-8 px-2"
                               >
                                 <FileSpreadsheet className="h-4 w-4" />
-                                <span className="sr-only">View Results</span>
-                              </Button>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr className="border-b">
-                          <td className="py-3 px-4">CS/2020/002</td>
-                          <td className="py-3 px-4">Jane Smith</td>
-                          <td className="py-3 px-4">jane.smith@example.com</td>
-                          <td className="py-3 px-4">3.92</td>
-                          <td className="py-3 px-4">
-                            <div className="flex items-center gap-2">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 px-2"
-                              >
-                                <User className="h-4 w-4" />
-                                <span className="sr-only">View Profile</span>
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 px-2"
-                              >
-                                <FileSpreadsheet className="h-4 w-4" />
-                                <span className="sr-only">View Results</span>
-                              </Button>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr className="border-b">
-                          <td className="py-3 px-4">CS/2020/003</td>
-                          <td className="py-3 px-4">Michael Johnson</td>
-                          <td className="py-3 px-4">michael.j@example.com</td>
-                          <td className="py-3 px-4">3.45</td>
-                          <td className="py-3 px-4">
-                            <div className="flex items-center gap-2">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 px-2"
-                              >
-                                <User className="h-4 w-4" />
-                                <span className="sr-only">View Profile</span>
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 px-2"
-                              >
-                                <FileSpreadsheet className="h-4 w-4" />
-                                <span className="sr-only">View Results</span>
-                              </Button>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr className="border-b">
-                          <td className="py-3 px-4">CS/2020/004</td>
-                          <td className="py-3 px-4">Sarah Williams</td>
-                          <td className="py-3 px-4">sarah.w@example.com</td>
-                          <td className="py-3 px-4">3.88</td>
-                          <td className="py-3 px-4">
-                            <div className="flex items-center gap-2">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 px-2"
-                              >
-                                <User className="h-4 w-4" />
-                                <span className="sr-only">View Profile</span>
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 px-2"
-                              >
-                                <FileSpreadsheet className="h-4 w-4" />
-                                <span className="sr-only">View Results</span>
-                              </Button>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr className="border-b">
-                          <td className="py-3 px-4">CS/2020/005</td>
-                          <td className="py-3 px-4">David Brown</td>
-                          <td className="py-3 px-4">david.b@example.com</td>
-                          <td className="py-3 px-4">3.65</td>
-                          <td className="py-3 px-4">
-                            <div className="flex items-center gap-2">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 px-2"
-                              >
-                                <User className="h-4 w-4" />
-                                <span className="sr-only">View Profile</span>
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 px-2"
-                              >
-                                <FileSpreadsheet className="h-4 w-4" />
-                                <span className="sr-only">View Results</span>
+                                <span className="">View Results</span>
                               </Button>
                             </div>
                           </td>
@@ -512,10 +295,10 @@ export default function AdminDashboard() {
                       <Download className="h-4 w-4" />
                       <span>Export Student List</span>
                     </Button>
-                    <Button className="flex items-center gap-2">
+                    {/* <Button className="flex items-center gap-2">
                       <Users className="h-4 w-4" />
                       <span>Manage Students</span>
-                    </Button>
+                    </Button> */}
                   </div>
                 </CardContent>
               </Card>

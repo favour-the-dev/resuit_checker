@@ -4,15 +4,7 @@ import type React from "react";
 
 import { useState } from "react";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  ChevronDown,
-  Download,
-  FileSpreadsheet,
-  LogOut,
-  Upload,
-  User,
-} from "lucide-react";
+import { Download, FileSpreadsheet, Upload } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,12 +15,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -39,6 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import DashboardHeader from "@/app/components/dashboardHeader";
 import { AdminSidebar } from "@/app/components/admin-sidebar";
 import { useApp } from "@/context/context";
 export default function UploadResultsPage() {
@@ -68,44 +55,15 @@ export default function UploadResultsPage() {
           appIsLoading ? "relative overflow-y-hidden" : "overflow-y-scroll"
         }`}
       >
-        <header className="border-b">
-          <div className="container py-4 px-6 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Link href="/admin/dashboard">
-                <Button variant="ghost" size="icon" className="mr-2">
-                  <ArrowLeft className="h-4 w-4" />
-                  <span className="sr-only">Back</span>
-                </Button>
-              </Link>
-              <h1 className="text-xl font-bold">Upload Results</h1>
-            </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center gap-2">
-                  <User className="h-4 w-4" />
-                  <span>Admin User</span>
-                  <ChevronDown className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>
-                  <User className="mr-2 h-4 w-4" />
-                  <span>Profile</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <Link href="/">Logout</Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </header>
+        <DashboardHeader role="admin" userName="admin" />
 
         <main className="flex-1 container py-6 px-6">
           <div className="max-w-3xl mx-auto">
             <Card>
               <CardHeader>
-                <CardTitle>Upload Student Results</CardTitle>
+                <CardTitle className="text-primary-main">
+                  Upload Student Results
+                </CardTitle>
                 <CardDescription>
                   Upload results for a specific course, level, and semester
                 </CardDescription>
