@@ -41,7 +41,7 @@ export default function AdminDashboard() {
       setAllResults(allResultData);
       setTimeout(() => {
         setAppIsLoading(false);
-      }, 1000);
+      }, 500);
     } catch (error) {
       console.log(error);
       throw error;

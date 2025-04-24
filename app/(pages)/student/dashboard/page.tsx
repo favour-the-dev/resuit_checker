@@ -26,6 +26,7 @@ import Loading from "@/app/components/loading";
 import ResultsService from "@/lib/api/results";
 import { CourseResultData } from "@/lib/types/types";
 import { exportToExcel } from "@/utilis/exportToExcel";
+import { toast } from "sonner";
 
 interface exportData {
   courseCode: string;
@@ -46,11 +47,11 @@ export default function StudentDashboard() {
       const profileData = await AuthService.getStudentProfile();
       console.log(profileData);
       setStudentProfile(profileData);
-      setTimeout(() => {
-        setAppIsLoading(false);
-      }, 500);
+      setAppIsLoading(false);
     } catch (error) {
+      setAppIsLoading(false);
       console.log(error);
+      toast(`error:${error}`);
       throw error;
     }
   }

@@ -8,6 +8,7 @@ import { useApp } from "@/context/context";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { ProfileData } from "@/lib/types/types";
+import { toast } from "sonner";
 import AuthService from "@/lib/api/auth";
 
 export function StudentSidebar() {
@@ -30,7 +31,9 @@ export function StudentSidebar() {
         setAppIsLoading(false);
       }, 500);
     } catch (error) {
+      setAppIsLoading(false);
       console.log(error);
+      toast(`error:${error}`);
       throw error;
     }
   }
