@@ -102,10 +102,13 @@ export default function SignupPage() {
           setIsLoading(false);
           toast(successMessage);
           router.push(`/student-login?email=${formData.email}`);
-        }, 1500);
+        }, 500);
       }
     } catch (error) {
+      setIsLoading(false);
       console.log(error);
+      toast(`error:${error}`);
+      throw Error;
     }
   };
 

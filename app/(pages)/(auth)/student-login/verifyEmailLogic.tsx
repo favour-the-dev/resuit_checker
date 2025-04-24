@@ -71,9 +71,11 @@ export default function VerifyEmailPage() {
         setVerificationStep("verify");
         setCountdown(30);
         toast(`Verification code sent to ${emailFromParams}`);
-      }, 1500);
+      }, 500);
     } catch (error) {
+      setIsRequestingCode(false);
       console.log(error);
+      toast(`error:${error}`);
       throw error;
     }
   };
@@ -97,9 +99,11 @@ export default function VerifyEmailPage() {
         } else {
           setError("Invalid verification code. Please try again.");
         }
-      }, 1500);
+      }, 500);
     } catch (error) {
+      setIsVerifying(false);
       console.log(error);
+      toast(`error:${error}`);
       throw error;
     }
   };

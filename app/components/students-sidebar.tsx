@@ -28,7 +28,7 @@ export function StudentSidebar() {
       setStudentProfile(profileData);
       setTimeout(() => {
         setAppIsLoading(false);
-      }, 1000);
+      }, 500);
     } catch (error) {
       console.log(error);
       throw error;

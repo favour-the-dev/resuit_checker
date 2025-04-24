@@ -76,10 +76,12 @@ export default function LoginPage() {
           setIsLoading(false);
           router.push("/admin/dashboard");
           toast("admin login successful");
-        }, 1500);
+        }, 500);
       }
     } catch (error) {
+      setIsLoading(false);
       console.log(error);
+      toast(`error:${error}`);
       throw error;
     }
   };
