@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { BookOpen, Home, User, X } from "lucide-react";
+import { Home, User, X } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
