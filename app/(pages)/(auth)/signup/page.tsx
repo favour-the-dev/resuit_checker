@@ -13,6 +13,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -29,6 +36,9 @@ export default function SignupPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    level: 100,
     matricNumber: "",
     email: "",
   });
@@ -45,13 +55,31 @@ export default function SignupPage() {
     }
   };
 
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // Clear error when user selects
+    if (errors[name]) {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+  };
+
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
+    if (!formData.firstName.trim())
+      newErrors.firstName = "First name is required";
+    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
+
     if (!formData.matricNumber.trim()) {
       newErrors.matricNumber = "Matriculation number is required";
     } else if (!/^[A-Za-z0-9/]+$/.test(formData.matricNumber)) {
       newErrors.matricNumber = "Invalid matriculation number format";
     }
+    if (!formData.level) newErrors.level = "Level is required";
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
@@ -113,6 +141,72 @@ export default function SignupPage() {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
+                <div className="grid  gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="firstName" className="text-primary-main">
+                      First Name
+                    </Label>
+                    <Input
+                      id="firstName"
+                      name="firstName"
+                      placeholder="Enter your first name"
+                      value={formData.firstName}
+                      onChange={handleChange}
+                      className={errors.firstName ? "border-destructive" : ""}
+                    />
+                    {errors.firstName && (
+                      <p className="text-xs text-destructive">
+                        {errors.firstName}
+                      </p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="lastName" className="text-primary-main">
+                      Last Name
+                    </Label>
+                    <Input
+                      id="lastName"
+                      name="lastName"
+                      placeholder="Enter your last name"
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      className={errors.lastName ? "border-destructive" : ""}
+                    />
+                    {errors.lastName && (
+                      <p className="text-xs text-destructive">
+                        {errors.lastName}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="level" className="text-primary-main">
+                    Level
+                  </Label>
+                  <Select
+                    value={`${formData.level}`}
+                    onValueChange={(value) =>
+                      handleSelectChange("level", value)
+                    }
+                  >
+                    <SelectTrigger
+                      id="level"
+                      className={errors.level ? "border-destructive" : ""}
+                    >
+                      <SelectValue placeholder="Select your level" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={`${100}`}>100 Level</SelectItem>
+                      <SelectItem value={`${200}`}>200 Level</SelectItem>
+                      <SelectItem value={`${300}`}>300 Level</SelectItem>
+                      <SelectItem value={`${400}`}>400 Level</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {errors.level && (
+                    <p className="text-xs text-destructive">{errors.level}</p>
+                  )}
+                </div>
+
                 <div className="flex items-center gap-2">
                   <Label htmlFor="matricNumber" className="text-primary-main">
                     Matriculation Number
@@ -189,7 +283,7 @@ export default function SignupPage() {
             <div className="text-sm text-center text-muted-foreground">
               Already have an account?{" "}
               <Link
-                href="/login?role=student"
+                href="/student-login"
                 className="text-primary-main hover:underline"
               >
                 Sign in

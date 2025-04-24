@@ -38,7 +38,14 @@ export function AdminSidebar() {
           <X />
         </div>
       </div>
-      <div className="flex-1 overflow-auto py-2">
+      <div
+        onClick={() => {
+          setTimeout(() => {
+            setIsAdminNavOpen(false);
+          }, 1000);
+        }}
+        className="flex-1 overflow-auto py-2"
+      >
         <nav className="grid items-start px-2 text-sm font-medium">
           <Link href="/admin/dashboard">
             <Button
@@ -66,7 +73,7 @@ export function AdminSidebar() {
               Upload Results
             </Button>
           </Link>
-          <Separator className="my-2" />
+          {/* <Separator className="my-2" />
           <Link href="/admin/profile">
             <Button
               variant="ghost"
@@ -79,7 +86,7 @@ export function AdminSidebar() {
               <User className="h-4 w-4" />
               Admin Profile
             </Button>
-          </Link>
+          </Link> */}
         </nav>
       </div>
       <div className="border-t p-4">

@@ -6,10 +6,38 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useApp } from "@/context/context";
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
+import { ProfileData } from "@/lib/types/types";
+import AuthService from "@/lib/api/auth";
 
 export function StudentSidebar() {
-  const { isStudentNavOpen, setIsStudentNavOpen } = useApp();
+  const {
+    isStudentNavOpen,
+    setIsStudentNavOpen,
+    appIsLoading,
+    setAppIsLoading,
+  } = useApp();
   const pathname = usePathname();
+  const [studentProfile, setStudentProfile] = useState<ProfileData>();
+
+  async function getStudentProfile() {
+    setAppIsLoading(true);
+    try {
+      const profileData = await AuthService.getStudentProfile();
+      console.log(profileData);
+      setStudentProfile(profileData);
+      setTimeout(() => {
+        setAppIsLoading(false);
+      }, 1000);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+  useEffect(() => {
+    getStudentProfile();
+  }, []);
   return (
     <div
       className={`absolute ${
@@ -38,7 +66,14 @@ export function StudentSidebar() {
           <X />
         </div>
       </div>
-      <div className="flex-1 overflow-auto py-2">
+      <div
+        onClick={() => {
+          setTimeout(() => {
+            setIsStudentNavOpen(false);
+          }, 1000);
+        }}
+        className="flex-1 overflow-auto py-2"
+      >
         <nav className="grid items-start px-2 text-sm font-medium">
           <Link href="/student/dashboard">
             <Button
@@ -89,9 +124,21 @@ export function StudentSidebar() {
           </div>
           <div>
             <p className="text-primary-main text-sm font-medium leading-none">
-              John Doe
+              {appIsLoading ? (
+                "Loading..."
+              ) : (
+                <span>
+                  {studentProfile?.firstName} {studentProfile?.lastName}
+                </span>
+              )}
             </p>
-            <p className="text-xs text-muted-foreground">CS/2020/001</p>
+            <p className="text-xs text-muted-foreground">
+              {appIsLoading ? (
+                "Loading..."
+              ) : (
+                <span>{studentProfile?.matricNumber}</span>
+              )}
+            </p>
           </div>
         </div>
       </div>

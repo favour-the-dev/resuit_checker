@@ -20,6 +20,8 @@ import { toast } from "sonner";
 import Image from "next/image";
 import { AdminData } from "@/lib/types/types";
 import AuthService from "@/lib/api/auth";
+// import { Eye } from "lucide-react";
+// import { EyeOff } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -30,6 +32,7 @@ export default function LoginPage() {
     email: "",
     password: "",
   });
+  // const [showPassword, setShowPassword] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -160,6 +163,9 @@ export default function LoginPage() {
                         onChange={handleChange}
                         className="pl-10"
                       />
+                      {/* <div className={`absolute right-0 top-[20%] text-sm`}>
+                        {showPassword ? <EyeOff /> : <Eye />}
+                      </div> */}
                       {errors.password && (
                         <p className="text-xs text-destructive">
                           {errors.password}

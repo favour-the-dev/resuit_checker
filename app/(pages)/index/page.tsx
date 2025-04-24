@@ -53,7 +53,7 @@ export default function Home() {
             <div
               className={`${
                 isOpen ? "right-0 z-30 opacity-100" : "opacity-0 -right-full"
-              } duration-200 ease-in-out py-5 px-3 bg-white text-primary-main rounded-lg absolute top-0 flex flex-col items-center gap-4`}
+              } duration-200 ease-in-out py-5 px-3 bg-white text-primary-main rounded-md absolute top-0 flex flex-col items-center gap-4`}
             >
               <div className="w-full flex">
                 <span
@@ -66,13 +66,13 @@ export default function Home() {
                 </span>
               </div>
               <Link href="/student-login">
-                <Button className="text-2xl font-semibold" variant="ghost">
-                  Login
+                <Button className="text-lg font-semibold" variant="ghost">
+                  Student Login
                 </Button>
               </Link>
-              <Link href="/contact">
-                <Button className="text-2xl font-semibold" variant="ghost">
-                  Contact
+              <Link href="/admin-login">
+                <Button className="text-lg font-semibold" variant="ghost">
+                  Admin Login
                 </Button>
               </Link>
             </div>
@@ -83,9 +83,14 @@ export default function Home() {
             <Link className="text-xl" href="/student-login">
               <Button variant="ghost">Login</Button>
             </Link>
-            <Link className="text-xl" href="/contact">
-              <Button variant="ghost">Contact</Button>
+            <Link href="/admin-login">
+              <Button className="text-lg font-semibold" variant="ghost">
+                Admin Login
+              </Button>
             </Link>
+            {/* <Link className="text-xl" href="/contact">
+              <Button variant="ghost">Contact</Button>
+            </Link> */}
           </div>
         </div>
       </header>

@@ -16,7 +16,7 @@ interface DashboardHeaderProps {
   userName?: string;
 }
 function DashboardHeader({ role, userName }: DashboardHeaderProps) {
-  const { setIsStudentNavOpen, setIsAdminNavOpen } = useApp();
+  const { setIsStudentNavOpen, setIsAdminNavOpen, handleLogOut } = useApp();
   function handleMenuClick() {
     if (role === "student") {
       setIsStudentNavOpen(true);
@@ -49,7 +49,7 @@ function DashboardHeader({ role, userName }: DashboardHeaderProps) {
                 <ChevronDown className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="cursor-pointer">
               <DropdownMenuItem>
                 <User className="mr-2 h-4 w-4 text-primary-main" />
                 <Link
@@ -59,14 +59,14 @@ function DashboardHeader({ role, userName }: DashboardHeaderProps) {
                   Profile
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <LogOut className="mr-2 h-4 w-4 text-primary-main" />
-                <Link
-                  href="/"
-                  className="text-primary-main hover:text-primary-main"
+              <DropdownMenuItem className="flex">
+                <LogOut className="mr-2 text-primary-main" />
+                <Button
+                  onClick={() => handleLogOut()}
+                  className="w-fit text-center bg-transparent text-primary-main hover:bg-muted px-0"
                 >
                   Logout
-                </Link>
+                </Button>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

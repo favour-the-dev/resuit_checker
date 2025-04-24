@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Download, FileSpreadsheet, Upload, User, Users } from "lucide-react";
+import { Download, Upload, Trash } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -22,12 +22,36 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardHeader from "@/app/components/dashboardHeader";
 import { AdminSidebar } from "@/app/components/admin-sidebar";
 import { useApp } from "@/context/context";
-import { availableSemesters } from "@/lib/data";
+import { allResultData } from "@/lib/types/types";
+import ResultsService from "@/lib/api/results";
+import Loading from "@/app/components/loading";
 
 export default function AdminDashboard() {
-  const { appIsLoading, currentLevel } = useApp();
-  const [selectedLevel, setSelectedLevel] = useState(currentLevel);
+  const { appIsLoading, setAppIsLoading } = useApp();
+  const [selectedMatricYear, setSelectedMatricYear] = useState("u2021");
   const [selectedSemester, setSelectedSemester] = useState("First Semester");
+  const [selectedCourse, setSelectedCourse] = useState("Ges100");
+  const [allResults, setAllResults] = useState<allResultData[]>([]);
+
+  const getAllResults = async () => {
+    setAppIsLoading(true);
+    try {
+      const allResultData = await ResultsService.getAllResult();
+      console.log(allResults);
+      setAllResults(allResultData);
+      setTimeout(() => {
+        setAppIsLoading(false);
+      }, 1000);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    console.log("mounted");
+    getAllResults();
+  }, [selectedCourse, selectedMatricYear, selectedSemester]);
   return (
     <div className="h-screen overflow-y-hidden flex relative">
       <AdminSidebar />
@@ -37,13 +61,14 @@ export default function AdminDashboard() {
           appIsLoading ? "relative overflow-y-hidden" : "overflow-y-scroll"
         }`}
       >
+        {appIsLoading && <Loading />}
         <DashboardHeader role="admin" userName="admin" />
 
         <main className="flex-1 container py-6 px-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
             <div>
               <h2 className="text-2xl font-bold text-primary-main">
-                Admin Dashboard
+                Welcome, Admin
               </h2>
               <p className="text-muted-foreground">
                 Manage student results and records
@@ -70,54 +95,32 @@ export default function AdminDashboard() {
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-primary-main">
-                  Total Students
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-primary-main">
-                  1,245
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Across all levels
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-primary-main">
                   Results Uploaded
                 </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-primary-main">24</div>
-                <p className="text-xs text-muted-foreground">This semester</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-primary-main">
-                  Pending Uploads
+                <CardTitle className="text-sm font-medium text-foreground/50">
+                  {selectedCourse}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-primary-main">3</div>
-                <p className="text-xs text-muted-foreground">
-                  Courses awaiting results
-                </p>
+                <div className="text-2xl font-bold text-primary-main">1</div>
               </CardContent>
             </Card>
           </div>
 
           <div className="flex flex-col md:flex-row gap-4 mb-6">
-            <Select value={selectedLevel} onValueChange={setSelectedLevel}>
+            <Select
+              value={`${selectedMatricYear}`}
+              onValueChange={(value) => setSelectedMatricYear(value)}
+            >
               <SelectTrigger className="w-full md:w-[150px]">
                 <SelectValue placeholder="Select level" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="100">100 Level</SelectItem>
-                <SelectItem value="200">200 Level</SelectItem>
-                <SelectItem value="300">300 Level</SelectItem>
-                <SelectItem value="400">400 Level</SelectItem>
+                <SelectItem value="u2020">U2020</SelectItem>
+                <SelectItem value="u2021">U2021</SelectItem>
+                <SelectItem value="u2022">U2022</SelectItem>
+                <SelectItem value="u2023">U2023</SelectItem>
+                <SelectItem value="u2024">U2024</SelectItem>
               </SelectContent>
             </Select>
 
@@ -144,10 +147,24 @@ export default function AdminDashboard() {
                 </SelectItem>
               </SelectContent>
             </Select>
+
+            <Select value={selectedCourse} onValueChange={setSelectedCourse}>
+              <SelectTrigger className="w-full md:w-[250px]">
+                <SelectValue placeholder="Select Course" />
+              </SelectTrigger>
+              <SelectContent className="text-primary-main">
+                <SelectItem
+                  value="Ges100"
+                  className="text-primary-main hover:text-primary-main/95"
+                >
+                  Ges.100
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <Tabs defaultValue="results">
-            <TabsList className="mb-4">
+            <TabsList className="mb-4 hidden">
               <TabsTrigger value="results" className="text-primary-main">
                 Results Management
               </TabsTrigger>
@@ -159,7 +176,8 @@ export default function AdminDashboard() {
               <Card>
                 <CardHeader>
                   <CardTitle className="text-primary-main">
-                    Results for {selectedLevel} Level - {selectedSemester}
+                    {selectedCourse} Results for {selectedMatricYear} Students -{" "}
+                    {selectedSemester}
                   </CardTitle>
                   <CardDescription>
                     Manage and upload results for the selected level and
@@ -172,47 +190,44 @@ export default function AdminDashboard() {
                       <thead>
                         <tr className="border-b text-primary-main">
                           <th className="text-left py-3 px-4">Course Code</th>
-                          <th className="text-left py-3 px-4">Course Title</th>
-                          <th className="text-left py-3 px-4">Status</th>
+                          <th className="text-left py-3 px-4">Student Score</th>
+                          <th className="text-left py-3 px-4">Student Grade</th>
+                          <th className="text-left py-3 px-4">
+                            Student Matric. no
+                          </th>
                           <th className="text-left py-3 px-4">Actions</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr className="border-b">
                           <td className="py-3 px-4">CSC301</td>
-                          <td className="py-3 px-4">
-                            Data Structures and Algorithms
-                          </td>
-                          <td className="py-3 px-4">
-                            <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
-                              Uploaded
-                            </span>
-                          </td>
+                          <td className="py-3 px-4">80</td>
+                          <td className="py-3 px-4">A</td>
+                          <td className="py-3 px-4">u2021/5570098</td>
                           <td className="py-3 px-4">
                             <div className="flex items-center gap-2">
                               <Link
                                 className=""
-                                href={"/viewResult/?course=csc301"}
+                                href={"/upload-result/?course=csc301"}
                               >
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  className="h-8 px-2"
+                                  className="duration-200 ease-in-out cursor-pointer h-8 px-2 bg-blue-600 hover:bg-blue-500 hover:text-white text-white"
                                 >
-                                  <FileSpreadsheet className="h-4 w-4" />
-                                  <span className="">View Results</span>
+                                  <Upload className="h-4 w-4" />
+                                  <span className="">Update Result</span>
                                 </Button>
                               </Link>
-                              <Link href={"/admin/upload-result?course=Csc301"}>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="h-8 px-2"
-                                >
-                                  <Download className="h-4 w-4" />
-                                  <span className="">Upload</span>
-                                </Button>
-                              </Link>
+
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="duration-200 ease-in-out cursor-pointer h-8 px-2 bg-red-600 text-white hover:text-white hover:bg-red-500"
+                              >
+                                <Trash className="h-4 w-4" />
+                                <span className="">Delete Result</span>
+                              </Button>
                             </div>
                           </td>
                         </tr>
@@ -220,22 +235,22 @@ export default function AdminDashboard() {
                     </table>
                   </div>
                   <div className="mt-6 flex flex-col sm:flex-row gap-2 justify-end">
-                    {/* <Button
+                    <Button
                       variant="outline"
                       className="flex items-center gap-2"
                     >
                       <Download className="h-4 w-4" />
-                      <span>Download Template</span>
-                    </Button> */}
-                    <Button className="flex items-center gap-2 bg-primary-main hover:bg-primary-main">
-                      <Upload className="h-4 w-4" />
-                      <span>Batch Upload Results</span>
+                      <span>Download Results</span>
                     </Button>
+                    {/* <Button className="flex items-center gap-2 bg-primary-main hover:bg-primary-main">
+                      <Upload className="h-4 w-4" />
+                      <span>Do</span>
+                    </Button> */}
                   </div>
                 </CardContent>
               </Card>
             </TabsContent>
-            <TabsContent value="students">
+            {/* <TabsContent value="students" className="hidden">
               <Card>
                 <CardHeader>
                   <CardTitle className="text-primary-main">
@@ -265,14 +280,14 @@ export default function AdminDashboard() {
                           <td className="py-3 px-4">3.75</td>
                           <td className="py-3 px-4">
                             <div className="flex items-center gap-2">
-                              {/* <Button
+                              <Button
                                 variant="ghost"
                                 size="sm"
                                 className="h-8 px-2"
                               >
                                 <User className="h-4 w-4" />
                                 <span className="sr-only">View Profile</span>
-                              </Button> */}
+                              </Button>
                               <Button
                                 variant="ghost"
                                 size="sm"
@@ -295,14 +310,14 @@ export default function AdminDashboard() {
                       <Download className="h-4 w-4" />
                       <span>Export Student List</span>
                     </Button>
-                    {/* <Button className="flex items-center gap-2">
+                    <Button className="flex items-center gap-2">
                       <Users className="h-4 w-4" />
                       <span>Manage Students</span>
-                    </Button> */}
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
-            </TabsContent>
+            </TabsContent> */}
           </Tabs>
         </main>
       </div>
